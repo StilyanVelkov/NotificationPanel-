@@ -28,7 +28,6 @@ const DialogItem = React.forwardRef<HTMLDivElement, DialogItemProps>((props, for
     const [type, setType] = React.useState('');
     const [personName, setPersonName] = React.useState('');
     const [referenceNumber, setReferenceNumber] = React.useState('');
-    const [text, setText] = React.useState('');
 
 
     const handleSubmit = () => {
@@ -52,7 +51,6 @@ const DialogItem = React.forwardRef<HTMLDivElement, DialogItemProps>((props, for
                 return; // Exit if the type is not recognized
         }
 
-        setText(notificationText);
         addNotification.mutate({type, person_name: personName, reference_number: referenceNumber, text: notificationText});
     }
   
@@ -80,12 +78,13 @@ const DialogItem = React.forwardRef<HTMLDivElement, DialogItemProps>((props, for
               <form className="flex flex-col gap-3 " 
               onSubmit={(event) => {
                               setOpen(false);
+                              handleSubmit();
                               event.preventDefault();
                           }}>
                 <SelectDropdown type={type} onTypeChange={(newType) => setType(newType)}/>
                 <input disabled={type !== "platform_update"} type="text" placeholder="Release number..." className="text-2xl border rounded-md p-2"  value={referenceNumber} onChange={(e) => setReferenceNumber(e.target.value)}/>
                 <input disabled={type === "platform_update"} type="text" placeholder="Person name..." className="text-2xl border rounded-md p-2" value={personName} onChange={(e) => setPersonName(e.target.value)}/>
-                <button type="submit" onClick={handleSubmit}>Sumbit</button>
+                <button type="submit">Sumbit</button>
               </form>
             <Dialog.Close asChild>
               <button className="absolute right-2.5 top-2.5 inline-flex size-[25px] appearance-none items-center justify-center rounded-full" aria-label="Close">
@@ -97,5 +96,7 @@ const DialogItem = React.forwardRef<HTMLDivElement, DialogItemProps>((props, for
       </Dialog.Root>
     );
   });
+
+DialogItem.displayName = "DialogItem";
 
 export default DialogItem;

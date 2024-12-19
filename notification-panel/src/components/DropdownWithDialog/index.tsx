@@ -7,11 +7,20 @@ import { useRouter } from "next/navigation";
 import { trpc } from "@/server/client";
 import clsx from "clsx";
 
-const DropdownWithDialog = ({num_unread_notifications, notifications}: {num_unread_notifications: number, notifications: any[]}) => {
+export type Notification = {
+  id: number,
+  type: string,
+  text: string,
+  is_read?: boolean | null,
+  person_name?: string | null,
+  reference_number?: string | null
+}
+
+const DropdownWithDialog = ({num_unread_notifications, notifications}: {num_unread_notifications: number, notifications: Notification[]}) => {
   const router = useRouter();
   const updateNotification = trpc.notification.updateNotification.useMutation();
 
-  const handleNotificationClick = (notification: any) => {
+  const handleNotificationClick = (notification: Notification) => {
 
     updateNotification.mutate({id: notification.id, is_read: true});
     switch(notification.type) {
@@ -41,7 +50,7 @@ const DropdownWithDialog = ({num_unread_notifications, notifications}: {num_unre
   
         <DropdownMenu.Group className="flex flex-col gap-2">
             <DropdownMenu.Label className="font-semibold">Notifications</DropdownMenu.Label>
-            {notifications.map((notification) => (
+            {notifications?.map((notification) => (
               <DropdownMenu.Item key={notification.id} 
               className={clsx("flex items-center gap-2 bg-gray-200 p-2 rounded-md font-semibold", 
                 notification.is_read && "bg-white font-normal", 
